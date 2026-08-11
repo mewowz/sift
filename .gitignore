@@ -1,0 +1,46 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+compile_commands.json
+cmake_install.cmake
+install_manifest.txt
+
+# Object / binary artifacts
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+*.exe
+
+# CUDA
+*.nsys-rep
+*.ncu-rep
+
+# Ninja
+*.ninja
+.ninja_log
+.ninja_deps
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+venv/
+dist/
+*.whl
+
+# Editors
+.vscode/
+.idea/
+*.swp
