@@ -22,3 +22,11 @@ A general-purpose C++ library implementing the standard family of recursive stat
 - **CPU backend** optimized for low-latency single-filter execution with cache-friendly layout, minimal call overhead and an embedded-safe build mode
 - **CUDA backend** optimized for batched multi-filter execution. SoA layout, batched small-matrix operations for the linear/EKF/UKF family, and CUDA-parallelized NIS scoring across a filter bank.
 - **Python bindings** as a layer on top of the core
+
+## Build
+Current way to build and execute tests:
+```sh
+cmake -S . -B build -DSIFT_BUILD_TESTS=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
