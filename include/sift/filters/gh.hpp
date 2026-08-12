@@ -22,19 +22,24 @@ public:
         if (!(dt > T{0})) {
             throw std::invalid_argument("GHFilter: dt must be > 0");
         }
+        
+        T dt_pow = T{1};
+        T fact = T{1};
+        for (std::size_t i = 0; i <= Order; ++i) {
+            predict_coeffs_[i] = (dt_pow / fact);
+            update_coeffs_[i] = (gains_[i] * fact) / dt_pow;
+            dt_pow *= dt_;
+            fact *= static_cast<T>(i + 1);
+        }
     }
 
 
     void predict() {
         state_type pred{};
         for (std::size_t k = 0; k <= Order; ++k) {
-            T dt_pow = T{1};
-            T fact = T{1};
             T sum = T{0};
             for (std::size_t i = 0; k + i <= Order; ++i) {
-                sum += state_.derivatives[k + i] * dt_pow / fact;
-                dt_pow *= dt_;
-                fact *= static_cast<T>(i + 1);
+                sum += state_.derivatives[k + i] * predict_coeffs_[i];
             }
             pred.derivatives[k] = sum;
         }
@@ -43,12 +48,8 @@ public:
 
     void update(measurement_type z) {
         T res = z - state_.derivatives[0];
-        T dt_pow = T{1};
-        T fact = T{1};
         for (std::size_t k = 0; k <= Order; ++k) {
-            state_.derivatives[k] += gains_[k] * res * fact / dt_pow;
-            dt_pow *= dt_;
-            fact *= static_cast<T>(k + 1);
+            state_.derivatives[k] += res * update_coeffs_[k];
         }
     }
     
@@ -59,5 +60,7 @@ private:
     std::array<T, Order + 1> gains_;
     T dt_;
 
+    std::array<T, Order + 1> predict_coeffs_;
+    std::array<T, Order + 1> update_coeffs_;
 };
 } //namespace sift
