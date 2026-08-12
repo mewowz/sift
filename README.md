@@ -7,11 +7,11 @@ A general-purpose C++ library implementing the standard family of recursive stat
 
 ## Status
 
-**Design phase** No filter implementations yet
+**Current Filters**
+- g-h filter to the n-th order
 
 ## Planned filters
 
-- Alpha-beta (a-b / g-h) filter
 - Kalman Filter Family (KF, UKF, EKF, EnKF, etc.)
 - Particle filter (bootstrap, Rao-Blackwellized, auxiliary)
 - H-infinity filter
