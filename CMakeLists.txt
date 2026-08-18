@@ -9,7 +9,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(SIFT_BUILD_TESTS "BUILD UNIT TESTS" ON)
+option(SIFT_BUILD_TESTS "Build unit tests" ON)
+option(SIFT_BUILD_BENCHMARKS "Build benchmarks" OFF)
 
 # core library
 
@@ -21,23 +22,43 @@ target_include_directories(sift_core INTERFACE
 )
 target_compile_features(sift_core INTERFACE cxx_std_20)
 
-# tests
-if(SIFT_BUILD_TESTS)
-    ## According to Catch2's docs
-    Include(FetchContent)
+# Catch2 is shared by tests and benchmarks
+if(SIFT_BUILD_TESTS OR SIFT_BUILD_BENCHMARKS)
+    include(FetchContent)
 
     FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG v3.15.3 # latest version as of writing
+        GIT_TAG v3.15.3
     )
     FetchContent_MakeAvailable(Catch2)
+endif()
 
-    ## All the tests
+# tests
+if(SIFT_BUILD_TESTS)
     add_executable(gh_filter_test tests/gh_filter_test.cpp)
-    target_link_libraries(gh_filter_test PRIVATE sift::core Catch2::Catch2WithMain)
+    target_link_libraries(
+        gh_filter_test
+        PRIVATE
+            sift::core
+            Catch2::Catch2WithMain
+    )
 
     include(CTest)
     include(Catch)
     catch_discover_tests(gh_filter_test)
+endif()
+
+# benchmarks
+if(SIFT_BUILD_BENCHMARKS)
+    add_executable(
+        gh_filter_benchmark
+        benchmarks/gh_filter_benchmark.cpp
+    )
+    target_link_libraries(
+        gh_filter_benchmark
+        PRIVATE
+            sift::core
+            Catch2::Catch2WithMain
+    )
 endif()
